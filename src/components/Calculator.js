@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import Button from './Button'
 
 function calcReducer(currentState, newState) {
@@ -33,6 +33,23 @@ const Calculator = () => {
       })
     }
   }
+  function inputDot(){
+      if(!/\./.test(displayValue)){
+          setState({
+              displayValue:`${displayValue}.`,
+              waitingForOperand:false
+          })
+      }
+  }
+  function inputPercent(){
+      const currentValue = parseFloat(displayValue)
+      if(currentValue === 0) return
+      const fixedDigits = displayValue.replace(/^-?\d*\.?/, '')
+      const newValue = parseFloat(displayValue)/100
+      setState({
+          displayValue : String(newValue.toFixed(fixedDigits.length+2))
+      })
+  }
   function performOperation(nextOperator) {
     console.log(nextOperator)
     const inputValue = parseFloat(displayValue)
@@ -53,7 +70,45 @@ const Calculator = () => {
       operator: nextOperator,
     })
   }
-
+  function clearAll(){
+      setState({
+        value:null,
+        displayValue:'0',
+        operator:null,
+        waitingForOperand:false
+      })
+  }
+  function clearLastChar(){
+      setState({
+          displayValue: displayValue.substring(0,displayValue.length-1) || '0'
+      })
+  }
+  function handleKeyDown(e){1
+      let {key} = e;
+      console.log(key)
+    if(key === 'Enter') key= '=';
+      if((!isNaN(key))){
+          e.preventDefault();
+          inputDigit(parseInt(key,10))
+      } else if(key in operations){
+        e.preventDefault();
+        performOperation(key)
+      } else if(key === 'Delete'){
+        e.preventDefault();
+        clearAll();
+      } else if(key === '.' || key ===','){
+          e.preventDefault()
+          inputDot();
+      
+      } else if(key === 'Backspace'){
+          e.preventDefault()
+          clearLastChar();
+      }
+  }
+  useEffect(()=>{
+      document.addEventListener('keydown',handleKeyDown)
+      return ()=>document.removeEventListener('keydown',handleKeyDown)
+  })
   return (
     <div className="w-64">
       <p className="w-full border  border-2-white  bg-black text-green-400 text-right text-4xl px-2">
@@ -177,14 +232,14 @@ const Calculator = () => {
         </Button>
       </p>
       <p className="flex">
-        <Button className="calculator-primary-btn">C</Button>
+        <Button className="calculator-primary-btn" onClick={() => clearAll()}>C</Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(0)}
         >
           0
         </Button>
-        <Button className="calculator-primary-btn">,</Button>
+        <Button className="calculator-primary-btn" onClick={()=>inputDot()}>,</Button>
         <Button
           className="calculator-secondary-btn"
           onClick={() => performOperation('*')}
@@ -208,7 +263,7 @@ const Calculator = () => {
       <p className="flex">
         <span className="calculator-primary-btn"></span>
         <span className="calculator-primary-btn"></span>
-        <Button className="calculator-primary-btn">%</Button>
+        <Button className="calculator-primary-btn" onClick={()=>inputPercent()}>%</Button>
         <Button
           className="calculator-secondary-btn"
           onClick={() => performOperation('=')}
