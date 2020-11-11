@@ -25,3 +25,9 @@
   .calculator-secondary-btn:active {
     @apply bg-orange-700;
   }
+  .primary-btn{
+    @apply  p-2 border rounded 
+   }
+   .primary-btn:hover{
+    @apply bg-orange-400 text-white
+   }

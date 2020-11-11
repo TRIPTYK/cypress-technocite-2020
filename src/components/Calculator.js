@@ -33,22 +33,22 @@ const Calculator = () => {
       })
     }
   }
-  function inputDot(){
-      if(!/\./.test(displayValue)){
-          setState({
-              displayValue:`${displayValue}.`,
-              waitingForOperand:false
-          })
-      }
-  }
-  function inputPercent(){
-      const currentValue = parseFloat(displayValue)
-      if(currentValue === 0) return
-      const fixedDigits = displayValue.replace(/^-?\d*\.?/, '')
-      const newValue = parseFloat(displayValue)/100
+  function inputDot() {
+    if (!/\./.test(displayValue)) {
       setState({
-          displayValue : String(newValue.toFixed(fixedDigits.length+2))
+        displayValue: `${displayValue}.`,
+        waitingForOperand: false,
       })
+    }
+  }
+  function inputPercent() {
+    const currentValue = parseFloat(displayValue)
+    if (currentValue === 0) return
+    const fixedDigits = displayValue.replace(/^-?\d*\.?/, '')
+    const newValue = parseFloat(displayValue) / 100
+    setState({
+      displayValue: String(newValue.toFixed(fixedDigits.length + 2)),
+    })
   }
   function performOperation(nextOperator) {
     console.log(nextOperator)
@@ -70,72 +70,77 @@ const Calculator = () => {
       operator: nextOperator,
     })
   }
-  function clearAll(){
-      setState({
-        value:null,
-        displayValue:'0',
-        operator:null,
-        waitingForOperand:false
-      })
+  function clearAll() {
+    setState({
+      value: null,
+      displayValue: '0',
+      operator: null,
+      waitingForOperand: false,
+    })
   }
-  function clearLastChar(){
-      setState({
-          displayValue: displayValue.substring(0,displayValue.length-1) || '0'
-      })
+  function clearLastChar() {
+    setState({
+      displayValue: displayValue.substring(0, displayValue.length - 1) || '0',
+    })
   }
-  function handleKeyDown(e){1
-      let {key} = e;
-      console.log(key)
-    if(key === 'Enter') key= '=';
-      if((!isNaN(key))){
-          e.preventDefault();
-          inputDigit(parseInt(key,10))
-      } else if(key in operations){
-        e.preventDefault();
-        performOperation(key)
-      } else if(key === 'Delete'){
-        e.preventDefault();
-        clearAll();
-      } else if(key === '.' || key ===','){
-          e.preventDefault()
-          inputDot();
-      
-      } else if(key === 'Backspace'){
-          e.preventDefault()
-          clearLastChar();
-      }
+  function handleKeyDown(e) {
+    1
+    let { key } = e
+    console.log(key)
+    if (key === 'Enter') key = '='
+    if (!isNaN(key)) {
+      e.preventDefault()
+      inputDigit(parseInt(key, 10))
+    } else if (key in operations) {
+      e.preventDefault()
+      performOperation(key)
+    } else if (key === 'Delete') {
+      e.preventDefault()
+      clearAll()
+    } else if (key === '.' || key === ',') {
+      e.preventDefault()
+      inputDot()
+    } else if (key === 'Backspace') {
+      e.preventDefault()
+      clearLastChar()
+    }
   }
-  useEffect(()=>{
-      document.addEventListener('keydown',handleKeyDown)
-      return ()=>document.removeEventListener('keydown',handleKeyDown)
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   })
   return (
     <div className="w-64">
-      <p className="w-full border  border-2-white  bg-black text-green-400 text-right text-4xl px-2">
+      <p className="w-full border  border-2-white  bg-black text-green-400 text-right text-4xl px-2"
+      data-testid="display">
         {displayValue}
       </p>
       <p className="flex">
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(1)}
+          data-testid="1"
         >
           1
         </Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(2)}
+          data-testid="2"
         >
           2
         </Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(3)}
+          data-testid="3"
         >
           3
         </Button>
         <Button
           className="calculator-secondary-btn"
           onClick={() => performOperation('+')}
+          data-testid="+"
         >
           <svg
             className="w-10 h-10"
@@ -157,24 +162,28 @@ const Calculator = () => {
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(4)}
+          data-testid="4"
         >
           4
         </Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(5)}
+          data-testid="5"
         >
           5
         </Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(6)}
+          data-testid="6"
         >
           6
         </Button>
         <Button
           className="calculator-secondary-btn"
           onClick={() => performOperation('-')}
+          data-testid="-"
         >
           <svg
             className="w-10 h-10"
@@ -196,24 +205,28 @@ const Calculator = () => {
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(7)}
+          data-testid="7"
         >
           7
         </Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(8)}
+          data-testid="8"
         >
           8
         </Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(9)}
+          data-testid="9"
         >
           9
         </Button>
         <Button
           className="calculator-secondary-btn"
           onClick={() => performOperation('/')}
+          data-testid="/"
         >
           <svg
             className="w-10 h-10"
@@ -232,17 +245,23 @@ const Calculator = () => {
         </Button>
       </p>
       <p className="flex">
-        <Button className="calculator-primary-btn" onClick={() => clearAll()}>C</Button>
+        <Button className="calculator-primary-btn" onClick={() => clearAll()} data-testid="C">
+          C
+        </Button>
         <Button
           className="calculator-primary-btn"
           onClick={() => inputDigit(0)}
+          data-testid="0"
         >
           0
         </Button>
-        <Button className="calculator-primary-btn" onClick={()=>inputDot()}>,</Button>
+        <Button className="calculator-primary-btn" onClick={() => inputDot()} data-testid=",">
+          ,
+        </Button>
         <Button
           className="calculator-secondary-btn"
           onClick={() => performOperation('*')}
+          data-testid="*"
         >
           <svg
             className="w-10 h-10"
@@ -263,10 +282,17 @@ const Calculator = () => {
       <p className="flex">
         <span className="calculator-primary-btn"></span>
         <span className="calculator-primary-btn"></span>
-        <Button className="calculator-primary-btn" onClick={()=>inputPercent()}>%</Button>
+        <Button
+          className="calculator-primary-btn"
+          onClick={() => inputPercent()}
+          data-testid="%"
+        >
+          %
+        </Button>
         <Button
           className="calculator-secondary-btn"
           onClick={() => performOperation('=')}
+          data-testid="="
         >
           =
         </Button>
